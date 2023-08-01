@@ -22,6 +22,7 @@ from datetime import date
 
 # Variables
 FILE_NAME = 'TestSP.xlsx' # ADD WAY TO CHANGE THIS BASED ON YEAR
+TEMP_FILE_NAME = 'temp.xlsx'
 LINK_TEMPLATE = 'https://sourceone.sandc.ws/apps/drawingsearch?query='
 
 # Tries to load spreadsheet with exception handling for when another team member is using the file
@@ -104,9 +105,13 @@ def initSheet(wb):
     ws = wb[sheets[month - 1]]
     return ws
 
+# Attempts to move data from the temp file to the main
+def uploadTemp():
+    wb = load_workbook(TEMP_FILE_NAME, data_only = True)
+
 ## ------------------ MAIN ------------------ ## 
 
-# Check to see if xlsx is open alreadyand determine next free row
+# Check to see if xlsx is open already and determine next free row
 wb = loadXl()
 ws = initSheet(wb)
 writeRow = nextFreeRow()
@@ -114,7 +119,6 @@ wb.save(FILE_NAME)
 
 
 user = input('Please enter your name (LASTNAME, FIRSTNAME): ')
-
 
 while True: #Continues until user is done inspecting
 
@@ -172,7 +176,7 @@ while True: #Continues until user is done inspecting
     writeRow += 1
 
     # Break the loop if user does not want to enter another inspection
-    anotherInsp = input('Click enter to do another inspection. Enter \'q\' to quit.')
+    anotherInsp = input('Click enter to do another inspection. Enter \'q\' to quit. ')
     if anotherInsp in {'q','Q'}:
         break
 

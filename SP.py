@@ -115,8 +115,8 @@ wb.save(FILE_NAME)
 
 user = input('Please enter your name (LASTNAME, FIRSTNAME): ')
 
-anotherInspection = True
-while anotherInspection: #Continues unti user is done inspecting
+
+while True: #Continues until user is done inspecting
 
     # SALES ORDER INPUT
     SO = input('Enter Sales Order (Check Oracle): ')
@@ -165,15 +165,16 @@ while anotherInspection: #Continues unti user is done inspecting
     if note not in {None, ' '}:
         ws['H' + str(writeRow)] = note
 
-
-        
-
     wb.save('TestSP.xlsx')
+    print('Data saved!')
 
     # Go to next row if reiterated
     writeRow += 1
 
-    break
+    # Break the loop if user does not want to enter another inspection
+    anotherInsp = input('Click enter to do another inspection. Enter \'q\' to quit.')
+    if anotherInsp in {'q','Q'}:
+        break
 
 
 input('PRESS ENTER TO CLOSE...')

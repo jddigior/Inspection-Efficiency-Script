@@ -21,7 +21,7 @@ from datetime import date
 
 
 # Variables
-FILE_NAME = 'TestSP.xlsx' # ADD WAY TO CHANGE THIS BASED ON YEAR
+FILE_NAME = date.today().strftime('Small Packaging Inspection %Y.xlsx') # ADD WAY TO CHANGE THIS BASED ON YEAR
 TEMP_FILE_NAME = 'temp.xlsx'
 LINK_TEMPLATE = 'https://sourceone.sandc.ws/apps/drawingsearch?query='
 
@@ -60,9 +60,12 @@ def dateIsListed(count):
     while (count > 0):
         #Checks the two most common date formats from the sheet, (00:00:00 is added by excel but not shown in the cell)
         if str(ws.cell(row = count, column = 1).value) in {date.today().strftime("%d/%m/%Y"), date.today().strftime("%Y-%m-%d 00:00:00")}:
-            found = True
+            return True
+        elif ws.cell(row = count, column = 1).value is not None:
+            return False
         count -= 1
-    return found
+    else:
+        return False
 
 # Uses sample size chart standard for the following numbers
 def numToInspect(qty):
@@ -108,19 +111,26 @@ def initSheet(wb):
 # Attempts to move data from the temp file to the main
 def uploadTemp(writeRow):
     wbTemp = load_workbook(TEMP_FILE_NAME, data_only = True)
-    wsTemp = wbTemp.active
+    wsTemp = wbTemp.active #temp only has one sheet
+
     row = nextFreeRow(wsTemp)
-    for i in range(1, row + 1):
-        ws['A' + str(writeRow + i - 1)] = wsTemp['A' + str(i)].value
-        ws['B' + str(writeRow + i - 1)] = wsTemp['B' + str(i)].value
-        ws['C' + str(writeRow + i - 1)] = wsTemp['C' + str(i)].value
-        ws['D' + str(writeRow + i - 1)] = wsTemp['D' + str(i)].value
-        ws['E' + str(writeRow + i - 1)] = wsTemp['E' + str(i)].value
-        ws['F' + str(writeRow + i - 1)] = wsTemp['F' + str(i)].value
-        ws['G' + str(writeRow + i - 1)] = wsTemp['G' + str(i)].value
+
+    for i in range(1, row):
+        if not dateIsListed(writeRow - 1):
+            ws['A' + str(writeRow)] = date.today().strftime("%d/%m/%Y")
+
+        ws['B' + str(writeRow)] = wsTemp['B' + str(i)].value
+        ws['C' + str(writeRow)] = wsTemp['C' + str(i)].value
+        ws['D' + str(writeRow)] = wsTemp['D' + str(i)].value
+        ws['E' + str(writeRow)] = wsTemp['E' + str(i)].value
+        ws['F' + str(writeRow)] = wsTemp['F' + str(i)].value
+        ws['G' + str(writeRow)] = wsTemp['G' + str(i)].value
+
         if wsTemp['H' + str(i)].value not in {None, ' '}:
-            ws['H' + str(writeRow + i - 1)] = wsTemp['H' + str(i)].value
+            ws['H' + str(writeRow)] = wsTemp['H' + str(i)].value
+
         writeRow += 1
+
     wsTemp.delete_rows(1,row)
     wbTemp.save(TEMP_FILE_NAME)
     return writeRow
@@ -186,7 +196,7 @@ while True: #Continues until user is done inspecting
     if note not in {None, ' '}:
         ws['H' + str(writeRow)] = note
 
-    wb.save('TestSP.xlsx')
+    wb.save(FILE_NAME)
     print('Data saved!')
 
     # Go to next row if reiterated

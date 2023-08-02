@@ -45,12 +45,12 @@ def loadXl():
     return wb
 
 #Finds the next empty row in the catalog number column
-def nextFreeRow():
+def nextFreeRow(sheet):
     count = 0
     rowFound = False
     while not rowFound:
         count += 1
-        if ws.cell(row = count, column = 3).value == None: # Catalog num are column 3
+        if sheet.cell(row = count, column = 3).value == None: # Catalog num are column 3
             rowFound = True
     return count
 
@@ -106,17 +106,34 @@ def initSheet(wb):
     return ws
 
 # Attempts to move data from the temp file to the main
-def uploadTemp():
-    wb = load_workbook(TEMP_FILE_NAME, data_only = True)
+def uploadTemp(writeRow):
+    wbTemp = load_workbook(TEMP_FILE_NAME, data_only = True)
+    wsTemp = wbTemp.active
+    row = nextFreeRow(wsTemp)
+    for i in range(1, row + 1):
+        ws['A' + str(writeRow + i - 1)] = wsTemp['A' + str(i)].value
+        ws['B' + str(writeRow + i - 1)] = wsTemp['B' + str(i)].value
+        ws['C' + str(writeRow + i - 1)] = wsTemp['C' + str(i)].value
+        ws['D' + str(writeRow + i - 1)] = wsTemp['D' + str(i)].value
+        ws['E' + str(writeRow + i - 1)] = wsTemp['E' + str(i)].value
+        ws['F' + str(writeRow + i - 1)] = wsTemp['F' + str(i)].value
+        ws['G' + str(writeRow + i - 1)] = wsTemp['G' + str(i)].value
+        if wsTemp['H' + str(i)].value not in {None, ' '}:
+            ws['H' + str(writeRow + i - 1)] = wsTemp['H' + str(i)].value
+        writeRow += 1
+    wsTemp.delete_rows(1,row)
+    wbTemp.save(TEMP_FILE_NAME)
+    return writeRow
+
 
 ## ------------------ MAIN ------------------ ## 
 
 # Check to see if xlsx is open already and determine next free row
 wb = loadXl()
 ws = initSheet(wb)
-writeRow = nextFreeRow()
+writeRow = nextFreeRow(ws)
+writeRow = uploadTemp(writeRow)
 wb.save(FILE_NAME)
-
 
 user = input('Please enter your name (LASTNAME, FIRSTNAME): ')
 

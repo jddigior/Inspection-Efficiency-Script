@@ -22,7 +22,7 @@ from datetime import date
 
 # Variables
 FILE_NAME = date.today().strftime('Small Packaging Inspection %Y.xlsx') # ADD WAY TO CHANGE THIS BASED ON YEAR
-TEMP_FILE_NAME = 'temp.xlsx'
+TEMP_FILE_NAME = 'Program-Info/temp.xlsx'
 LINK_TEMPLATE = 'https://sourceone.sandc.ws/apps/drawingsearch?query='
 
 # Tries to load spreadsheet with exception handling for when another team member is using the file
@@ -206,6 +206,5 @@ while True: #Continues until user is done inspecting
     anotherInsp = input('Click enter to do another inspection. Enter \'q\' to quit. ')
     if anotherInsp in {'q','Q'}:
         break
-
 
 input('PRESS ENTER TO CLOSE...')

@@ -1,6 +1,0 @@
-- Potentially create a temp sheet to save data when someone else has the sheet open
-    - Have a function try to upload the data to the real sheet whenever someone runs the program
-- Sheet selection function
-- Qty to inspect function using chart
-- Big while loop to allow multiple inspections
-- Open drawing function

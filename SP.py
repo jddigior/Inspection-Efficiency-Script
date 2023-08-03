@@ -30,19 +30,25 @@ def canLoadXl():
     try:
         wb = load_workbook(FILE_NAME, data_only = True)
     except PermissionError:
-        print('Someone already has the document open. Try again later.')
-        return False, 'Error'
+        try:
+            wb = load_workbook(TEMP_FILE_NAME, data_only = True)
+        except PermissionError:
+            print('Someone already has the document open. Try again later.')
+            return False, 'Error'
+        
+        else:
+            return False, wb
     else:
         return True, wb
     
 # Calls above function to attempt file load until sucessful or exited
 def loadXl():
     isLoaded, wb = canLoadXl()
-    while (not isLoaded):
+    while (wb == 'Error'):
         input('Press Enter to try again.')
         isLoaded, wb = canLoadXl()
 
-    return wb
+    return wb, isLoaded
 
 #Finds the next empty row in the catalog number column
 def nextFreeRow(sheet):
@@ -135,15 +141,34 @@ def uploadTemp(writeRow):
     wbTemp.save(TEMP_FILE_NAME)
     return writeRow
 
+# Reads announcment file and prints it
+def displayAnnouncments():
+    file = open('Program-Info/QA-reminders.txt','r')
+
+    reminders = file.readlines()
+    print('---------------------------------------------------------------------------')
+    print('REMINDERS: ')
+    for i in range(len(reminders)):
+        print(reminders[i])
+    print('---------------------------------------------------------------------------')
+
+    file.close()
 
 ## ------------------ MAIN ------------------ ## 
 
+
+displayAnnouncments()
+
 # Check to see if xlsx is open already and determine next free row
-wb = loadXl()
-ws = initSheet(wb)
-writeRow = nextFreeRow(ws)
-writeRow = uploadTemp(writeRow)
-wb.save(FILE_NAME)
+wb, isLoaded = loadXl()
+
+if(isLoaded == True):
+    ws = initSheet(wb)
+    writeRow = nextFreeRow(ws)
+    writeRow = uploadTemp(writeRow)
+    wb.save(FILE_NAME)
+else:
+    wb.save(TEMP_FILE_NAME)
 
 user = input('Please enter your name (LASTNAME, FIRSTNAME): ')
 
@@ -179,8 +204,13 @@ while True: #Continues until user is done inspecting
     note = input('Enter a note (Press enter to skip): ')
 
     # Open sheet again to quickly add data
-    wb = loadXl()
-    ws = initSheet(wb)
+    wb, isLoaded = loadXl()
+    if(isLoaded == True):
+        ws = initSheet(wb)
+    else:
+        ws = wb.active
+    
+    writeRow = nextFreeRow(ws)
 
     # Add date if needed
     if not dateIsListed(writeRow - 1):
@@ -196,11 +226,12 @@ while True: #Continues until user is done inspecting
     if note not in {None, ' '}:
         ws['H' + str(writeRow)] = note
 
-    wb.save(FILE_NAME)
+    # Save data
+    if(isLoaded == True):
+        wb.save(FILE_NAME)
+    else:
+        wb.save(TEMP_FILE_NAME)
     print('Data saved!')
-
-    # Go to next row if reiterated
-    writeRow += 1
 
     # Break the loop if user does not want to enter another inspection
     anotherInsp = input('Click enter to do another inspection. Enter \'q\' to quit. ')

@@ -20,7 +20,7 @@ from datetime import date
 
 # Variables
 FILE_NAME = date.today().strftime('Small Packaging Inspection %Y.xlsx') # ADD WAY TO CHANGE THIS BASED ON YEAR
-TEMP_FILE_NAME = 'Program-Info/temp.xlsx'
+TEMP_FILE_NAME = 'Program-Files/temp.xlsx'
 LINK_TEMPLATE = 'https://sourceone.sandc.ws/apps/drawingsearch?query='
 
 # Tries to load spreadsheet with exception handling for when another team member is using the file
@@ -141,7 +141,7 @@ def uploadTemp(writeRow):
 
 # Reads announcment file and prints it
 def displayAnnouncments():
-    file = open('Program-Info/QA-reminders.txt','r')
+    file = open('Program-Files/QA-reminders.txt','r')
 
     reminders = file.read()
     print('---------------------------------------------------------------------------')

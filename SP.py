@@ -6,7 +6,6 @@ Python 3.11
 
 Dependancies: 
 - Openpyxl (version 3.1.2)
-- Keyboard (version 0.13.5)
 - Excel (Developed on Microsoft® Excel® for Microsoft 365 MSO Version 2305 Build 16.0.16501.20074 64-bit )
 
 IT IS UNKNOWN IF THIS PROGRAM WILL FUNCTION ON UPDATED VERSIONS OF DEPENDANCIES
@@ -15,7 +14,6 @@ IT IS UNKNOWN IF THIS PROGRAM WILL FUNCTION ON UPDATED VERSIONS OF DEPENDANCIES
 # Modules and Libraries
 import webbrowser
 import time
-import keyboard
 from openpyxl import load_workbook
 from datetime import date
 
@@ -32,10 +30,10 @@ def canLoadXl():
     except PermissionError:
         try:
             wb = load_workbook(TEMP_FILE_NAME, data_only = True)
+            print('Someone has the file open, you\'re data will be saved and uploaded later.')
         except PermissionError:
             print('Someone already has the document open. Try again later.')
             return False, 'Error'
-        
         else:
             return False, wb
     else:
@@ -145,11 +143,10 @@ def uploadTemp(writeRow):
 def displayAnnouncments():
     file = open('Program-Info/QA-reminders.txt','r')
 
-    reminders = file.readlines()
+    reminders = file.read()
     print('---------------------------------------------------------------------------')
-    print('REMINDERS: ')
-    for i in range(len(reminders)):
-        print(reminders[i])
+    print('REMINDERS: \n')
+    print(reminders)
     print('---------------------------------------------------------------------------')
 
     file.close()
@@ -159,9 +156,8 @@ def displayAnnouncments():
 
 displayAnnouncments()
 
-# Check to see if xlsx is open already and determine next free row
+# Check to see if xlsx is open already and upload temp contents if it isn't
 wb, isLoaded = loadXl()
-
 if(isLoaded == True):
     ws = initSheet(wb)
     writeRow = nextFreeRow(ws)

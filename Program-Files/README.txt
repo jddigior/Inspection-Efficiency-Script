@@ -14,3 +14,8 @@ IMPORTANT - For this program to work properly the following must be true:
 - TMs who opt to enter data manually use standard DD/MM/YYYY date format
 - There cannot be any empty rows in the middle of the sheet
 
+Code Written by: Jonathan DiGiorgio
+ver 1.0 - Aug 4, 2023
+
+
+Contact author at jddigior@uwaterloo.ca

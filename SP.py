@@ -185,7 +185,7 @@ while True: #Continues until user is done inspecting
 
     # SAMPLE SIZE INSPECTION STANDARD
     inspQty = numToInspect(lotQty)
-    print("Please inspect {} parts".format(inspQty))
+    print("Please inspect {} part(s)".format(inspQty))
     time.sleep(1.5)
 
      # OPEN RESPECTIVE DRAWING

@@ -193,8 +193,13 @@ while True: #Continues until user is done inspecting
 
     # INSPECTION RESULTS INPUT
     result = input('Pass or Fail? : ')
-    while result not in {'Pass','pass','Fail','fail'}:
+    while result not in {'Pass','pass','Fail','fail','p','P','f','F'}:
         result = input('Invalid input, try again: ')
+
+    if result in {'p','P','pass'}:
+        result = 'Pass'
+    elif result in {'f','F','fail'}:
+        result = 'Fail'
 
     # NOTE INPUT
     note = input('Enter a note (Press enter to skip): ')

@@ -6,7 +6,7 @@ It also tells the inspector how much of the lot to inspect based on S&C quality 
 Some known info is automatically filled (date, name, qty inspected) to decrease time wasted typing.
 Uses an editable .txt file for managment to place important inspection reminders which will display during use of the program.
 This program also circumvents the annoying Excel feature which doesnt allow multiple editors at once.
-When another user has the sheet open, a temp sheet is used to store data ad then is uplaoded laterwhen possible.
+When another user has the sheet open, a temp sheet is used to store data ad then is uplaoded later when possible.
 
 IMPORTANT - For this program to work properly the following must be true:
 - Must have the inspection file (in the same directory as the .exe) by the name "Small Packaging Inspection (CURRENT YEAR).xlsx"

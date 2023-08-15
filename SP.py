@@ -213,10 +213,10 @@ while True: #Continues until user is done inspecting
         ws['A' + str(writeRow)] = date.today().strftime("%d/%m/%Y")
 
     # Add everything else
-    ws['B' + str(writeRow)] = SO
+    ws['B' + str(writeRow)] = int(SO)
     ws['C' + str(writeRow)] = catNum
-    ws['D' + str(writeRow)] = inspQty
-    ws['E' + str(writeRow)] = lotQty
+    ws['D' + str(writeRow)] = int(inspQty)
+    ws['E' + str(writeRow)] = int(lotQty)
     ws['F' + str(writeRow)] = result
     ws['G' + str(writeRow)] = user
     if note not in {None, ' '}:
@@ -227,11 +227,11 @@ while True: #Continues until user is done inspecting
         wb.save(FILE_NAME)
     else:
         wb.save(TEMP_FILE_NAME)
-    print('Data saved!')
+    print('-----------------------------------Data saved!----------------------------------------')
 
     # Break the loop if user does not want to enter another inspection
     anotherInsp = input('Click enter to do another inspection. Enter \'q\' to quit. ')
     if anotherInsp in {'q','Q'}:
         break
 
-input('PRESS ENTER TO CLOSE...')
+input('---------------------------------------------------------------------------\nPRESS ENTER TO CLOSE...')

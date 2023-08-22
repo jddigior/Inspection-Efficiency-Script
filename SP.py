@@ -60,7 +60,7 @@ def nextFreeRow(sheet):
 
 #checks if a date was already listed in the spreadsheet
 def dateIsListed(count):
-    found = False
+
     while (count > 0):
         #Checks the two most common date formats from the sheet, (00:00:00 is added by excel but not shown in the cell)
         if str(ws.cell(row = count, column = 1).value) in {date.today().strftime("%d/%m/%Y"), date.today().strftime("%Y-%m-%d 00:00:00")}:
@@ -98,7 +98,8 @@ def numToInspect(qty):
     elif qty <= 35000:
         return 125  #Standard ends here
     else:
-        return int((125/35000)*qty) # Linearization from previous 
+        #return int((125/35000)*qty) # Linearization from previous 
+        return int(0.9*(qty**0.474)) # Power trend line from Excel, R^2 = 0.987
 
 # Opens drawing in browser
 def openDrawing(catalogNum):
@@ -120,7 +121,7 @@ def uploadTemp(writeRow):
     row = nextFreeRow(wsTemp)
 
     for i in range(1, row):
-        if not dateIsListed(writeRow - 1):
+        if not dateIsListed(writeRow - 1): 
             ws['A' + str(writeRow)] = date.today().strftime("%d/%m/%Y")
 
         ws['B' + str(writeRow)] = wsTemp['B' + str(i)].value
@@ -153,7 +154,6 @@ def displayAnnouncments():
 
 ## ------------------ MAIN ------------------ ## 
 
-
 displayAnnouncments()
 
 # Check to see if xlsx is open already and upload temp contents if it isn't
@@ -161,7 +161,7 @@ wb, isLoaded = loadXl()
 if(isLoaded == True):
     ws = initSheet(wb)
     writeRow = nextFreeRow(ws)
-    writeRow = uploadTemp(writeRow)
+    writeRow = uploadTemp(writeRow) #upload data from temp to the main file
     wb.save(FILE_NAME)
 else:
     wb.save(TEMP_FILE_NAME)

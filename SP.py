@@ -16,7 +16,7 @@ import webbrowser
 import time
 from openpyxl import load_workbook
 from datetime import date
-
+import cv2
 
 # Variables
 FILE_NAME = date.today().strftime('Small Packaging Inspection %Y.xlsx') # ADD WAY TO CHANGE THIS BASED ON YEAR

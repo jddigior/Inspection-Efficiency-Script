@@ -27,6 +27,7 @@ LINK_TEMPLATE = 'https://sourceone.sandc.ws/apps/drawingsearch?query='
 def canLoadXl():
     try:
         wb = load_workbook(FILE_NAME, data_only = True)
+        wb.save(FILE_NAME)
     except PermissionError:
         try:
             wb = load_workbook(TEMP_FILE_NAME, data_only = True)

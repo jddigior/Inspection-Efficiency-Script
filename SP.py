@@ -17,11 +17,13 @@ import time
 from openpyxl import load_workbook
 from datetime import date
 import cv2
+import os
 
 # Variables
 FILE_NAME = date.today().strftime('Small Packaging Inspection %Y.xlsx') # ADD WAY TO CHANGE THIS BASED ON YEAR
 TEMP_FILE_NAME = 'Program-Files/temp.xlsx'
 LINK_TEMPLATE = 'https://sourceone.sandc.ws/apps/drawingsearch?query='
+PIC_LINK = r'file:///\\TOR-FS01.sandc.ws\QltyAssr\Inspections\Small Packaging Inspection' + '\\'
 
 # Tries to load spreadsheet with exception handling for when another team member is using the file
 def canLoadXl():
@@ -153,6 +155,47 @@ def displayAnnouncments():
 
     file.close()
 
+def getLotPic(SO, catNum):
+    cam = cv2.VideoCapture(0)
+
+    while True:
+        ret, frame = cam.read()
+        if not ret:
+            print("failed to grab frame")
+            ret = 'Empty'
+            break
+
+        cv2.imshow("Click space to take a picture, escape to exit", frame)
+
+        k = cv2.waitKey(1)
+        if k%256 == 27:
+            # ESC pressed
+            print("Escape hit, closing...")
+            ret = 'Empty'
+            break
+        elif k%256 == 32:
+            # SPACE pressed
+            path = 'Program-Files/images/' + str(SO)
+            isExist = os.path.exists(path)
+            if not isExist:
+                os.makedirs(path)
+            
+            count = 0
+            path = 'Program-Files/images/' + str(SO) + "/" + str(catNum) + ".png"
+            while os.path.exists(path):
+                count += 1
+                path = 'Program-Files/images/' + str(SO) + "/" + str(catNum) + '-(' + str(count) + ')' + ".png"
+
+            cv2.imwrite(path, frame)
+            print("{}.png written!".format(str(catNum)))
+
+            ret = path
+            break
+
+    cam.release()
+    cv2.destroyAllWindows()
+    return ret
+
 ## ------------------ MAIN ------------------ ## 
 
 displayAnnouncments()
@@ -205,6 +248,10 @@ while True: #Continues until user is done inspecting
     # NOTE INPUT
     note = input('Enter a note (Press enter to skip): ')
 
+    #Prompt to take a picture of lot
+    print('Press space to take a picture of the lot (esc to skip)')
+    path = getLotPic(SO, catNum)
+
     # Open sheet again to quickly add data
     wb, isLoaded = loadXl()
     if(isLoaded == True):
@@ -227,6 +274,10 @@ while True: #Continues until user is done inspecting
     ws['G' + str(writeRow)] = user
     if note not in {None, ' '}:
         ws['H' + str(writeRow)] = note
+    if path != 'Empty':
+        ws['I' + str(writeRow)].value = "picture"
+        ws['I' + str(writeRow)].hyperlink = PIC_LINK + path
+
 
     # Save data
     if(isLoaded == True):

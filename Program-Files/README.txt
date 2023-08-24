@@ -16,6 +16,7 @@ IMPORTANT - For this program to work properly the following must be true:
 
 Code Written by: Jonathan DiGiorgio
 ver 1.0 - Aug 4, 2023
+ver 1.1 - Aug 24, 2023
 
 
 Contact author at jddigior@uwaterloo.ca

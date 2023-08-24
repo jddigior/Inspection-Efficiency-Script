@@ -137,6 +137,10 @@ def uploadTemp(writeRow):
         if wsTemp['H' + str(i)].value not in {None, ' '}:
             ws['H' + str(writeRow)] = wsTemp['H' + str(i)].value
 
+        if wsTemp['I' + str(i)].value not in {None, ' '}:
+            ws['I' + str(writeRow)].value = wsTemp['I' + str(i)].value
+            ws['I' + str(writeRow)].hyperlink = wsTemp['I' + str(i)].hyperlink
+
         writeRow += 1
 
     wsTemp.delete_rows(1,row)
@@ -155,6 +159,7 @@ def displayAnnouncments():
 
     file.close()
 
+# Has user take a picture of the lot
 def getLotPic(SO, catNum):
     cam = cv2.VideoCapture(0)
 
@@ -277,7 +282,6 @@ while True: #Continues until user is done inspecting
     if path != 'Empty':
         ws['I' + str(writeRow)].value = "picture"
         ws['I' + str(writeRow)].hyperlink = PIC_LINK + path
-
 
     # Save data
     if(isLoaded == True):

@@ -18,6 +18,7 @@ from openpyxl import load_workbook
 from datetime import date
 import cv2
 import os
+import sys
 
 # Variables
 FILE_NAME = date.today().strftime('Small Packaging Inspection %Y.xlsx') # ADD WAY TO CHANGE THIS BASED ON YEAR
@@ -161,7 +162,14 @@ def displayAnnouncments():
 
 # Has user take a picture of the lot
 def getLotPic(SO, catNum):
-    cam = cv2.VideoCapture(0)
+
+    cam = cv2.VideoCapture(1) # check if back camera opens
+    if cam is None or not cam.isOpened():
+       print ("\033[A" + 121*" " + "\033[A") # delete warning message from opencv
+       cam = cv2.VideoCapture(0) # check if front camera opens
+       if cam is None or not cam.isOpened():
+           print('Camera failed to open')
+           return 'Empty'
 
     while True:
         ret, frame = cam.read()

@@ -11,6 +11,7 @@ Dependancies:
 IT IS UNKNOWN IF THIS PROGRAM WILL FUNCTION ON UPDATED VERSIONS OF DEPENDANCIES
 """
 
+
 # Modules and Libraries
 import webbrowser
 import time
@@ -18,7 +19,6 @@ from openpyxl import load_workbook
 from datetime import date
 import cv2
 import os
-import sys
 
 # Variables
 FILE_NAME = date.today().strftime('Small Packaging Inspection %Y.xlsx') # ADD WAY TO CHANGE THIS BASED ON YEAR
@@ -34,7 +34,7 @@ def canLoadXl():
     except PermissionError:
         try:
             wb = load_workbook(TEMP_FILE_NAME, data_only = True)
-            print('Someone has the file open, you\'re data will be saved and uploaded later.')
+            print('WARNING: Someone has the file open, you\'re data will be saved to Program-Files/Temp.xlsx and uploaded later.')
         except PermissionError:
             print('Someone already has the document open. Try again later.')
             return False, 'Error'
@@ -156,16 +156,17 @@ def displayAnnouncments():
     print('---------------------------------------------------------------------------')
     print('REMINDERS: \n')
     print(reminders)
-    print('---------------------------------------------------------------------------')
+    print('---------------------------------------------------------------------------\n')
 
     file.close()
 
 # Has user take a picture of the lot
-def getLotPic(SO, catNum):
+def getLotPic(SO, catNum, numCam):
 
-    cam = cv2.VideoCapture(1) # check if back camera opens
+    cam = None
+    if int(numCam) >= 2:
+        cam = cv2.VideoCapture(1) # check if back camera opens
     if cam is None or not cam.isOpened():
-       print ("\033[A" + 121*" " + "\033[A") # delete warning message from opencv
        cam = cv2.VideoCapture(0) # check if front camera opens
        if cam is None or not cam.isOpened():
            print('Camera failed to open')
@@ -224,6 +225,9 @@ else:
     wb.save(TEMP_FILE_NAME)
 
 user = input('Please enter your name (LASTNAME, FIRSTNAME): ')
+numCam = input('Do you have 1 or 2 cameras?: ')
+while not numCam.isdigit():
+    numCam = input('Please input a valid number:')
 
 while True: #Continues until user is done inspecting
 
@@ -263,7 +267,7 @@ while True: #Continues until user is done inspecting
 
     #Prompt to take a picture of lot
     print('Press space to take a picture of the lot (esc to skip)')
-    path = getLotPic(SO, catNum)
+    path = getLotPic(SO, catNum, numCam)
 
     # Open sheet again to quickly add data
     wb, isLoaded = loadXl()
@@ -302,5 +306,3 @@ while True: #Continues until user is done inspecting
     anotherInsp = input('Click enter to do another inspection. Enter \'q\' to quit. ')
     if anotherInsp in {'q','Q'}:
         break
-
-input('---------------------------------------------------------------------------\nPRESS ENTER TO CLOSE...')
